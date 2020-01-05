@@ -1,0 +1,43 @@
+<script type="text/javascript">
+<!--
+function addTF(str)
+{
+  document.calendarForm.calendar.value += str + " 18:00〜";
+  document.calendarForm.calendar.value += '\n'
+}
+// -->
+</script>
+
+<p id="notice"><%= notice %></p>
+
+<h1>Event-Generator</h1>
+
+<%= form_tag("/create",{multipart: true,name:"calendarForm"}) do %>
+  <p>イベント名</p>
+  <p>※新年会、忘年会、会議など</p>
+  <input type = "text" name= "title">
+  <br>
+  <p>イベントの説明</p>
+  <p>※イベントの趣旨や詳細を記入しましょう。</p>
+  <textarea name="memo" id="memo"></textarea>
+  <br>
+  <p>カレンダー</p>
+  <p>※候補日時を入力してください。候補の区切りは改行で判断されます。</p>
+  <p>表示されているカレンダーの日付をクリックすると自動入力されます。</p>
+  <textarea name="calendar" id="calendar"></textarea>
+  <br>
+  <input type = "submit" value = "スケジュール作成">
+<% end %>
+
+<%= month_calendar events: @meetings do |date, meetings| %>
+  <% if Date.today <= date %>
+    <input type="button" value="<%= date %>" onClick="addTF(this.value)"><br>
+  <% else %>
+    <%= date %>
+  <% end %>
+  <% meetings.each do |meeting| %>
+    <div>
+      <%= meeting.name %>
+    </div>
+  <% end %>
+<% end %>

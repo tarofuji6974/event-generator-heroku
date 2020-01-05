@@ -1,0 +1,3 @@
+  <p>イベントが作成されました。以下のURLを関係者に共有しましょう</p>
+  <input type="text" value = "URLxxx/<%= @event.url %>" readonly>
+  <%= link_to "イベントページへ", "/share/#{@event.id}" + "/#{@event.url}" %>

@@ -1,0 +1,94 @@
+<script type="text/javascript">
+<!--
+
+var array = [];
+
+function addStatus(str,str2)
+{
+  var spl = str2.split('status');
+  //alert(Number(spl[1]));
+  array[Number(spl[1])] = str + 'chk';
+  //document.target.hidden_status_data.value = str;
+  //lert(array[Number(spl[1])]);
+}
+
+function confirmStatus()
+{
+  var count = 0;
+  while (true) {
+    
+    if(array[count].length > 0 ){
+      //alert(array[count]);
+
+      document.target.hidden_status_data.value += array[count];
+
+      count++;
+
+    }else{
+
+      break;
+    }
+    
+  }
+  //alert("ok");
+}
+
+// -->
+</script>
+
+<h3>イベント名：<%= @event.title %></h3>
+<h4>説明：<%= @event.memo %></h4>
+
+ <table border="1">
+    <tr>
+      <th>候補日</th>
+      <% if !@hash.empty? %>
+        <% @hash.each do |key,value| %>
+          <td><%= key[0] %>さん</td>
+         <% end %>
+      <% else %>
+          <th>○</th>
+          <th>▲</th>
+          <th>✖︎</th>
+      <% end %>
+    </tr>
+    <% @event_s.each_with_index do |es,i| %>
+      <tr>
+        <td><%= es %></td>
+        <% if @event.candidate_count == "0人" %>
+          <td>0人</td>
+          <td>0人</td>
+          <td>0人</td>
+        <% else %>
+          <% @hash.each do |key,value| %>
+            <% if value[i] == "A" %>
+              <td>○</td>
+            <% elsif value[i] == "B" %>
+              <td>▲</td>
+            <% else %>
+              <td>✖︎</td>
+            <% end %>
+          <% end %>
+        <% end %>
+      </tr>
+    <% end %>
+</table>
+
+<hr>
+<%= form_tag("/update/#{@event.id}",{multipart: true,name:"target"}) do %>
+  <p>名前</p>
+  <input type="text" name="name" pattern="[A-Za-z]*">
+  <br>
+  <p>候補日</p>
+  <% @event_s.each_with_index do |es,i| %>
+    <p>
+    <%= es %>
+    ○<input type = "radio" name= <%= "status#{i}" %> value="A" onClick="addStatus(this.value, this.name)">
+    ▲<input type = "radio" name= <%= "status#{i}" %> value="B" onClick= "addStatus(this.value, this.name)">
+    ✖︎<input type = "radio" name= <%= "status#{i}" %> value="C" onClick="addStatus(this.value, this.name)" checked >
+    </p>
+  <% end %>
+  <br>
+  <input type="hidden" name="hidden_status_data">
+  <input type="submit" value="スケジュールを入力する" onclick="confirmStatus()">
+<% end %>
