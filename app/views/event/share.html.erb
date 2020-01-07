@@ -14,12 +14,11 @@ function addStatus(str,str2)
 
 function confirmStatus()
 {
+  // 登録前に確認する処理が必要
   var count = 0;
   while (true) {
-    
     if(array[count].length > 0 ){
       //alert(array[count]);
-
       document.target.hidden_status_data.value += array[count];
 
       count++;
@@ -28,18 +27,18 @@ function confirmStatus()
 
       break;
     }
-    
   }
-  //alert("ok");
 }
 
 // -->
 </script>
 
-<h3>イベント名：<%= @event.title %></h3>
-<h4>説明：<%= @event.memo %></h4>
-
- <table border="1">
+<h1 id = "partition">イベント名</h1>
+  <p><%= @event.title %></p>
+<h1 id = "partition">説明</h1>
+  <p><%= @event.memo %></p>
+<h1 id = "partition">候補日</h1>
+ <table>
     <tr>
       <th>候補日</th>
       <% if !@hash.empty? %>
@@ -77,7 +76,7 @@ function confirmStatus()
 <hr>
 <%= form_tag("/update/#{@event.id}",{multipart: true,name:"target"}) do %>
   <p>名前</p>
-  <input type="text" name="name" pattern="[A-Za-z]*">
+  <input type="text" name="name" id = "namearea" pattern="[A-Za-z]*">
   <br>
   <p>候補日</p>
   <% @event_s.each_with_index do |es,i| %>
@@ -90,5 +89,5 @@ function confirmStatus()
   <% end %>
   <br>
   <input type="hidden" name="hidden_status_data">
-  <input type="submit" value="スケジュールを入力する" onclick="confirmStatus()">
+  <input type="submit" value="スケジュールを入力する" onclick="confirmStatus()" class = "btn-square-slant">
 <% end %>

@@ -1,3 +1,8 @@
+<div id ="viewarea">
   <p>イベントが作成されました。以下のURLを関係者に共有しましょう</p>
-  <input type="text" value = "URLxxx/<%= @event.url %>" readonly>
-  <%= link_to "イベントページへ", "/share/#{@event.id}" + "/#{@event.url}" %>
+  <input type="text" value = "https://event-generator.herokuapp.com/share/<%= @event.id %>/<%= @event.url %>" id= "urlarea" readonly>
+  <!--クリップボードにURLをコピーする機能を実装予定-->
+  <br>
+  <br>
+  <%= link_to "イベントページへ", "/share/#{@event.id}" + "/#{@event.url}",{class: "btn-square-slant"} %>
+</div>

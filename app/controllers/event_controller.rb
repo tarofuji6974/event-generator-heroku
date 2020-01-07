@@ -3,6 +3,7 @@ class EventController < ApplicationController
   def create
     require 'securerandom'
 
+    #イベントの登録
     @event = Event.new(
       title: params[:title],
       memo: params[:memo],
@@ -10,10 +11,9 @@ class EventController < ApplicationController
       url: SecureRandom.urlsafe_base64,
       candidate_count: "0人"
     )
-    count = params[:calendar].count('\n')
+    #count = params[:calendar].count('\n')
 
-    #@event.candidate_count = "0人-0人-0人/" * count
-
+    #イベントの保存処理
     if @event.save
       redirect_to("/events/create/#{@event.id}")
     else
@@ -28,22 +28,25 @@ class EventController < ApplicationController
   def share
     @event = Event.find(params[:id])
 
+    #イベントのURLが間違っていたらルートパスに戻す
     if @event.url != params[:url]
       flash[:notice] = "URLが間違っています"
       redirect_to(root_path)
     end
 
+    #候補日を改行文字で区切る
     @event_s = @event.candidate_date.split("\r\n")
 
-    @test = ''
-    @test2 = ''
+    name = ''
+    status = ''
     @hash = {}
     if @event.candidate_count != '0人'
-      @test = @event.candidate_count.scan(/「name:(\w+)」/)
-      @test2 =@event.candidate_count.scan(/status:(\w+)/)
+      name = @event.candidate_count.scan(/「name:(\w+)」/)
+      status =@event.candidate_count.scan(/status:(\w+)/)
 
-      @test.each_with_index do |test,i|
-        @hash.store(test,@test2[i].join.split("chk"))
+      #名前とステータスでhashをつくる
+      name.each_with_index do |n,i|
+        @hash.store(n,status[i].join.split("chk"))
       end
     end
   end
@@ -51,7 +54,6 @@ class EventController < ApplicationController
   def update
     @event = Event.find(params[:id])
     #参会者登録処理
-    #検証中
     if params[:name] != nil
       @event.candidate_count += "///「name:" + params[:name] + 
                               "」//「status:" + params[:hidden_status_data] + 
@@ -60,6 +62,7 @@ class EventController < ApplicationController
         render("/share/#{@event.id}/#{@event.url}")
     end
 
+    #イベントの更新処理
     if @event.save
       #flash[:notice] = "登録しました"
       redirect_to("/share/#{@event.id}/#{@event.url}")
