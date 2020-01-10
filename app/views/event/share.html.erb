@@ -75,16 +75,17 @@ function confirmStatus()
 
 <hr>
 <%= form_tag("/update/#{@event.id}",{multipart: true,name:"target"}) do %>
-  <p>名前</p>
-  <input type="text" name="name" id = "namearea" pattern="[A-Za-z]*">
+  <p>名前 ※同名の二重登録はできません</p>
+  <!--<input type="text" name="name" id = "namearea" pattern="[A-Za-z]*">-->
+  <input type="text" name="name" id = "namearea">
   <br>
   <p>候補日</p>
   <% @event_s.each_with_index do |es,i| %>
     <p>
     <%= es %>
-    ○<input type = "radio" name= <%= "status#{i}" %> value="A" onClick="addStatus(this.value, this.name)">
-    ▲<input type = "radio" name= <%= "status#{i}" %> value="B" onClick= "addStatus(this.value, this.name)">
-    ✖︎<input type = "radio" name= <%= "status#{i}" %> value="C" onClick="addStatus(this.value, this.name)" checked >
+    ○<input type = "radio" name= <%= "status#{i}" %> value="A" onClick="addStatus(this.value, this.name)" required >
+    ▲<input type = "radio" name= <%= "status#{i}" %> value="B" onClick= "addStatus(this.value, this.name)" required>
+    ✖︎<input type = "radio" name= <%= "status#{i}" %> value="C" onClick="addStatus(this.value, this.name)" required >
     </p>
   <% end %>
   <br>

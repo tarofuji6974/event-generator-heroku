@@ -1,6 +1,7 @@
 class EventController < ApplicationController
 
   def create
+    #パスワードのランダム生成のため必須
     require 'securerandom'
 
     #イベントの登録
@@ -11,13 +12,14 @@ class EventController < ApplicationController
       url: SecureRandom.urlsafe_base64,
       candidate_count: "0人"
     )
-    #count = params[:calendar].count('\n')
 
     #イベントの保存処理
     if @event.save
       redirect_to("/events/create/#{@event.id}")
     else
-      redirect_to("/meetings/index")
+      @meetings = Meeting.all
+      flash[:notice] = "未入力情報があります"
+      render("/meetings/index")
     end
   end
 
@@ -40,9 +42,23 @@ class EventController < ApplicationController
     name = ''
     status = ''
     @hash = {}
+
+    #登録されていた場合、以下の処理を行う
     if @event.candidate_count != '0人'
-      name = @event.candidate_count.scan(/「name:(\w+)」/)
+      name = @event.candidate_count.scan(/「name:(\w+|[ー－]+|[ぁ-んァ-ン一-龥]+)」/)
+      #name = @event.candidate_count.scan(/「name:(\p{Hiragana}|\p{Katakana}|[ー－]|[一-龠々]+)」/)
       status =@event.candidate_count.scan(/status:(\w+)/)
+
+      array_uniq = name.uniq
+
+      #keyを重複しないようにする
+      (array_uniq).each_with_index do |element,i|
+        if name.grep(element).size > 1
+          #重複した要素数で配列を削除
+          name.delete(i)
+          status.delete(i)
+        end
+      end
 
       #名前とステータスでhashをつくる
       name.each_with_index do |n,i|

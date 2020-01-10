@@ -5,6 +5,8 @@ class MeetingsController < ApplicationController
   # GET /meetings.json
   def index
     @meetings = Meeting.all
+
+    @event = Event.new
   end
 
   # GET /meetings/1
